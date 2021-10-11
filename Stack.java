@@ -70,7 +70,7 @@ public class Stack<T>{
         return this.len;
     }
     public int size(){
-        return this.size;
+        return this.len;
     }
 
     //Empties list
