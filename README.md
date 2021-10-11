@@ -1,1 +1,1 @@
-# project2
+# CS321 Project2: Assembler
