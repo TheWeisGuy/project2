@@ -16,6 +16,10 @@ public class parser {
         this.input = this.readFile();
     }
 
+    /**
+     * reades file and returns list of strings of lines
+     * @return ArrayList of each line
+     */
     public ArrayList<String> readFile(){
         try{
             FileReader fr = new FileReader(new File(this.filePath));
