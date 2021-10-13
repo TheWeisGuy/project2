@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.*;
 
+
 public class parser {
     private ArrayList<String> input;
     private String output;
@@ -12,6 +13,7 @@ public class parser {
     public parser(String fileName){
         this.output = "";
         this.filePath = fileName;
+        this.input = this.readFile();
     }
 
     public ArrayList<String> readFile(){
@@ -35,6 +37,31 @@ public class parser {
           }
         return null;
     }
+
+    /*
+    Splits lines by spaces
+    */
+    private ArrayList<String[]> tokenize(){
+
+
+        //Stores the arrays of tokens
+        ArrayList<String[]> out = new ArrayList<String[]>();
+
+        //Loops through each line
+        for(int i = 0; i < out.size(); i++){
+
+            String line = this.input.get(i);
+            //Spliting by spaces in the line
+            //NOTE: Unsure if the \n is also added to tokens, may cause problems
+            String[] tokens = line.split(" ");
+            out.add(tokens);
+        }
+
+        return out;
+    }
+
+    
+    
 
 
 }
