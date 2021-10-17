@@ -5,15 +5,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.*;
 
-
+/*This class reads in infix expressions and 
+ *Outputs equivilent assembly code
+ *
+ *Takes the path of the input file, which may contain
+ * multiple infix expressions on differnt lines separated by ";"
+ *
+ * */
 public class Parser {
+    //input and output store all the infix and assembly/outfix respectivly
     private ArrayList<String> input;
     private ArrayList<String> output;
     private String filePath;
+
+    //Takes the file path fo the input file and will write to an output file
+    //NOTE: What is the output file?
     public Parser(String fileName){
         this.filePath = fileName;
         this.input = this.readFile();
-        System.out.println(this.tokenize().get(0)[0]);
         this.output = this.toPostfix(this.tokenize());
     }
 
@@ -21,8 +30,9 @@ public class Parser {
      * reades file and returns list of strings of lines
      * @return ArrayList of each line
      */
-    public ArrayList<String> readFile(){
+    private ArrayList<String> readFile(){
         try{
+            //Reading in file and putting each line in ArrayList
             FileReader fr = new FileReader(new File(this.filePath));
             BufferedReader f = new BufferedReader(fr);
             ArrayList<String> strings = new ArrayList<String>();
@@ -31,7 +41,8 @@ public class Parser {
             while(line==null){
                 strings.add(line);
             }
-            this.input = strings;
+            f.close();
+            fr.close();
             return strings;
         }
         catch(FileNotFoundException ex) {
@@ -47,8 +58,6 @@ public class Parser {
     Splits lines by spaces
     */
     private ArrayList<String[]> tokenize(){
-
-
         //Stores the arrays of tokens
         ArrayList<String[]> out = new ArrayList<String[]>();
 
@@ -71,29 +80,31 @@ public class Parser {
      */
     private ArrayList<String> toPostfix(ArrayList<String[]> tokens){
         Stack<String> stack = new Stack<String>();
+        //out will hold a list of all infix expressions
         ArrayList<String> out = new ArrayList<String>();
+        //loops throught all the tokenized infix expressions
         for(int i = 0; i<tokens.size();i++){
+            //Getting the current infix
             String[] line = tokens.get(i);
+            //initiating loop varables
             String token = line[0];
             int j = 1;
-
-            //crashes here
-            //while loop does not meet end condition
-            while(token!=";"){
-                if(token == ")"){
+            while(!token.equals(";")){
+                if(token.equals(")")){
+                    //end of operation, pushing operation onto stack
                     String right = stack.pop();
                     String op = stack.pop();
                     String left = stack.pop();
-                    stack.push(left+right+op);
+                    stack.push(String.format("%s %s %s", left, right, op));
                 }
-                else if(token!="("){
+                else if(!token.equals("(")){
                     stack.push(token);
                 }
-                System.out.println(token);
-                token = line[j];
+                token = line[j].strip();
                 j++;
                 
             }
+            //For help debugging, the stack should always have a size of 1
             if(stack.getLength()>1){
                 System.out.println("Invalid Infix expression at line: "+Integer.toString(i+1));
             }
@@ -104,6 +115,7 @@ public class Parser {
         return(out);
     }
 
+    //returns outputs
     public ArrayList<String> getOutput(){
         return(this.output);
     }
