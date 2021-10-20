@@ -1,5 +1,6 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.io.FileReader;
@@ -24,7 +25,6 @@ public class Parser {
         ops.put("/", "DV");
         this.filePath = fileName;
         this.input = this.readFile();
-        System.out.println(this.tokenize().get(0)[0]);
         this.output = this.toPostfix(this.tokenize());
         this.output = this.toAssembly(this.output);
         
@@ -40,10 +40,11 @@ public class Parser {
             BufferedReader f = new BufferedReader(fr);
             ArrayList<String> strings = new ArrayList<String>();
             String line = f.readLine();
-            strings.add(line);
-            while(line==null){
+            while(line!=null){
                 strings.add(line);
+                line = f.readLine();
             }
+            f.close();
             this.input = strings;
             return strings;
         }
@@ -95,12 +96,11 @@ public class Parser {
                     String right = stack.pop();
                     String op = stack.pop();
                     String left = stack.pop();
-                    stack.push(left+right+op);
+                    stack.push(left+" "+right+" "+op);
                 }
                 else if(!(token.equals("("))){
                     stack.push(token);
                 }
-                System.out.println(token);
                 token = line[j];
                 j++;
                 
@@ -120,16 +120,37 @@ public class Parser {
         for(int i = 0; i<postfix.size(); i++){
             Stack<String> stack = new Stack<String>();
             String[] line = postfix.get(i).split(" ");
-            String token = line[0];
+            System.out.println(postfix.get(i));
             for(int j = 0; j<line.length;j++){
+                String token = line[j];
                 if(!(this.ops.containsKey(token))){
+                    System.out.println("Token: "+token);
                     stack.push(token);
                 }
                 else{
-                    String[] temp = stack.pop().split(" ");
-                    String right = temp[temp.length-1];
-                    temp = stack.pop().split(" ");
-                    String left = temp[temp.length-1];
+                    String temp = stack.pop().trim();
+                    System.out.println("Temp: "+temp);
+                    int n = temp.lastIndexOf("TMP");
+                    String right;
+                    if(n==-1){
+                        
+                        right = temp;
+                    }
+                    else{
+                        right = temp.substring(n, temp.length()-1);
+                    }
+                    String left;
+                    temp = stack.pop().trim();
+                    n = temp.lastIndexOf("TMP");
+                    if(n==-1){
+                        left = temp;
+                    }
+                    else{
+                        left = temp.substring(n, temp.length()-1);
+                    }
+                    System.out.println(right);
+                    System.out.println("Left: "+left);
+                    System.out.println(this.evaluate(left, token, right));
                     stack.push(this.evaluate(left, token, right));
                 }
             }
@@ -149,7 +170,7 @@ public class Parser {
 
         String out = String.format("LD %s\n" , left);
         out += String.format("%s %s\n", this.ops.get(op), right);
-        out += String.format("ST TMP%i\n", n);
+        out += String.format("ST TMP%d\n", n);
         return(out);
     }
 
