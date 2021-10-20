@@ -26,6 +26,7 @@ public class Parser {
         this.input = this.readFile();
         System.out.println(this.tokenize().get(0)[0]);
         this.output = this.toPostfix(this.tokenize());
+        this.output = this.toAssembly(this.output);
         
     }
 
@@ -89,16 +90,14 @@ public class Parser {
             String token = line[0];
             int j = 1;
 
-            //crashes here
-            //while loop does not meet end condition
-            while(token!=";"){
-                if(token == ")"){
+            while(!(token.equals(";"))){
+                if(token.equals(")")){
                     String right = stack.pop();
                     String op = stack.pop();
                     String left = stack.pop();
                     stack.push(left+right+op);
                 }
-                else if(token!="("){
+                else if(!(token.equals("("))){
                     stack.push(token);
                 }
                 System.out.println(token);
@@ -118,7 +117,24 @@ public class Parser {
 
     private ArrayList<String> toAssembly(ArrayList<String> postfix){
         ArrayList<String> out = new ArrayList<String>();
-
+        for(int i = 0; i<postfix.size(); i++){
+            Stack<String> stack = new Stack<String>();
+            String[] line = postfix.get(i).split(" ");
+            String token = line[0];
+            for(int j = 0; j<line.length;j++){
+                if(!(this.ops.containsKey(token))){
+                    stack.push(token);
+                }
+                else{
+                    String[] temp = stack.pop().split(" ");
+                    String right = temp[temp.length-1];
+                    temp = stack.pop().split(" ");
+                    String left = temp[temp.length-1];
+                    stack.push(this.evaluate(left, token, right));
+                }
+            }
+            out.add(stack.pop());
+        }
 
 
         return(out);
