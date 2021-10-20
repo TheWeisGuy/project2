@@ -1,20 +1,32 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.*;
+import java.util.Hashtable;
 
 
 public class Parser {
     private ArrayList<String> input;
     private ArrayList<String> output;
     private String filePath;
+
+    private Hashtable<String,String> ops = new Hashtable<String,String>(4);
+    
+        
     public Parser(String fileName){
+        ops.put("*", "ML");
+        ops.put("+", "AD");
+        ops.put("-", "SB");
+        ops.put("/", "DV");
         this.filePath = fileName;
         this.input = this.readFile();
         System.out.println(this.tokenize().get(0)[0]);
         this.output = this.toPostfix(this.tokenize());
+        
     }
 
     /**
@@ -104,9 +116,33 @@ public class Parser {
         return(out);
     }
 
+    private ArrayList<String> toAssembly(ArrayList<String> postfix){
+        ArrayList<String> out = new ArrayList<String>();
+
+
+
+        return(out);
+
+    }
+
+    private String evaluate(String left, String op, String right){
+        int n = 1;
+        if(right.contains("TMP")){
+            n = Integer.parseInt(right.substring(3)) + 1;
+        }
+
+        String out = String.format("LD %s\n" , left);
+        out += String.format("%s %s\n", this.ops.get(op), right);
+        out += String.format("ST TMP%i\n", n);
+        return(out);
+    }
+
+
     public ArrayList<String> getOutput(){
         return(this.output);
     }
+
+    
 
     public static void main(String argv[]){
         Parser parse = new Parser(argv[0]);
