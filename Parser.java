@@ -14,6 +14,7 @@ public class Parser {
     private ArrayList<String> input;
     private ArrayList<String> output;
     private String filePath;
+    private int tempNo;
 
     private Hashtable<String,String> ops = new Hashtable<String,String>(4);
     
@@ -23,11 +24,11 @@ public class Parser {
         ops.put("+", "AD");
         ops.put("-", "SB");
         ops.put("/", "DV");
+        this.tempNo = 1;
         this.filePath = fileName;
         this.input = this.readFile();
         this.output = this.toPostfix(this.tokenize());
         this.output = this.toAssembly(this.output);
-        
     }
 
     /**
@@ -120,57 +121,45 @@ public class Parser {
         for(int i = 0; i<postfix.size(); i++){
             Stack<String> stack = new Stack<String>();
             String[] line = postfix.get(i).split(" ");
-            System.out.println(postfix.get(i));
             for(int j = 0; j<line.length;j++){
                 String token = line[j];
                 if(!(this.ops.containsKey(token))){
-                    System.out.println("Token: "+token);
                     stack.push(token);
                 }
                 else{
                     String temp = stack.pop().trim();
-                    System.out.println("Temp: "+temp);
                     int n = temp.lastIndexOf("TMP");
                     String right;
                     if(n==-1){
-                        
                         right = temp;
                     }
                     else{
-                        right = temp.substring(n, temp.length()-1);
+                        right = temp.substring(n, temp.length());
                     }
                     String left;
-                    temp = stack.pop().trim();
-                    n = temp.lastIndexOf("TMP");
-                    if(n==-1){
-                        left = temp;
+                    String temp2 = stack.pop().trim();
+                    Integer  m = temp2.lastIndexOf("TMP");
+                    if(m==-1){
+                        left = temp2;
                     }
                     else{
-                        left = temp.substring(n, temp.length()-1);
+                        left = temp2.substring(m, temp2.length());
                     }
-                    System.out.println(right);
-                    System.out.println("Left: "+left);
-                    System.out.println(this.evaluate(left, token, right));
                     stack.push(this.evaluate(left, token, right));
                 }
             }
             out.add(stack.pop());
+            System.out.println("");
+            this.tempNo=1;
         }
-
-
         return(out);
-
     }
 
     private String evaluate(String left, String op, String right){
-        int n = 1;
-        if(right.contains("TMP")){
-            n = Integer.parseInt(right.substring(3)) + 1;
-        }
-
         String out = String.format("LD %s\n" , left);
         out += String.format("%s %s\n", this.ops.get(op), right);
-        out += String.format("ST TMP%d\n", n);
+        out += String.format("ST TMP%d\n", this.tempNo++);
+        System.out.print(out);
         return(out);
     }
 
@@ -183,7 +172,6 @@ public class Parser {
 
     public static void main(String argv[]){
         Parser parse = new Parser(argv[0]);
-        System.out.println(parse.getOutput().toString());
     }
 
 }
