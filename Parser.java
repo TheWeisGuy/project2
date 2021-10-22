@@ -28,6 +28,8 @@ public class Parser {
         this.filePath = fileName;
         this.input = this.readFile();
         this.output = this.toPostfix(this.tokenize());
+        System.out.println("Postfix: "+this.output);
+        System.out.println("Assembly: ");
         this.output = this.toAssembly(this.output);
     }
 
@@ -171,7 +173,9 @@ public class Parser {
     
 
     public static void main(String argv[]){
-        Parser parse = new Parser(argv[0]);
+        System.out.println("data3-1.txt output:");
+        Parser parse = new Parser("data3-1.txt");
+        System.out.println("data3-2-1.txt output:");
+        Parser parse2 = new Parser("data3-2-1.txt");
     }
-
 }
