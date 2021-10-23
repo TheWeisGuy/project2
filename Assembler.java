@@ -6,13 +6,10 @@ import java.io.*;
 
 
 public class Assembler {
-    //Input should be an arraylist of postfix expressions from Postfix.java
-    private ArrayList<String> input;
     //Stores all the assembly outputs
     private ArrayList<String> output;
-    private ArrayList<String> returnableOutput;
+    private String returnableOutput = "";
 
-    private String filePath;
     //Stores what temporary register # is to be used next
     private int tempNo = 1;
     
@@ -25,7 +22,6 @@ public class Assembler {
         ops.put("+", "AD");
         ops.put("-", "SB");
         ops.put("/", "DV");
-        this.returnableOutput = new ArrayList<String>();
         this.output = this.toAssembly(input);
     }
 
@@ -81,8 +77,8 @@ public class Assembler {
                 }
             }
             //What is left on the stack is full assembly
-            out.add(stack.pop());
-            System.out.println("");
+            out.add(this.returnableOutput);
+            this.returnableOutput = "";
             this.tempNo=1;
         }
         return(out);
@@ -92,13 +88,13 @@ public class Assembler {
         String out = String.format("LD %s\n" , left);
         out += String.format("%s %s\n", this.ops.get(op), right);
         out += String.format("ST TMP%d\n", this.tempNo++);
-        this.returnableOutput.add(out);
+        this.returnableOutput += out.strip() + "\n";
         return(out);
     }
 
 
     public ArrayList<String> getOutput(){
-        return(this.returnableOutput);
+        return(this.output);
     } 
 
     public static void main(String argv[]){
