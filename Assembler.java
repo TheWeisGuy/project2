@@ -1,6 +1,18 @@
+/*
+Henry Weisman & Emerson Wright
+CS 321 Project 2
+
+This class will take postfix from Postfix.java and convert
+to assembly code.
+
+If an output file is specified, then it will write all
+assembly expressions there, otherwise it is printed
+
+Usage:
+java Assembler <input> <output>
+*/
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.Hashtable;
 import java.io.*;
 
@@ -88,6 +100,7 @@ public class Assembler {
         String out = String.format("LD %s\n" , left);
         out += String.format("%s %s\n", this.ops.get(op), right);
         out += String.format("ST TMP%d\n", this.tempNo++);
+        //This feild keeps track of the full assembly string through the while loop
         this.returnableOutput += out.strip() + "\n";
         return(out);
     }
@@ -101,11 +114,13 @@ public class Assembler {
         Postfix p = new Postfix(argv[0]);
         Assembler a = new Assembler(p.getOutput());
         ArrayList<String> out = a.getOutput();
+        //Formating output string
         String str = "";
         for(int i = 0; i < out.size(); i++ ){
             str += out.get(i);
             str += "\n";
         }
+        //Writing to proper output
         if (argv.length > 1){
             String path = argv[1];
             File f = new File(path);

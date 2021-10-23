@@ -3,6 +3,8 @@ Henry Weisman & Emerson Wright
 CS 321 Project 2
 
 This class will take an input file with infix expressions
+and convert to postfix expressions
+
 If an output file is specified, then it will write all
 postfix expressions there, otherwise it is printed
 
@@ -80,18 +82,22 @@ public class Postfix {
     private ArrayList<String> toPostfix(ArrayList<String[]> tokens){
         Stack<String> stack = new Stack<String>();
         ArrayList<String> out = new ArrayList<String>();
+        //for each expression
         for(int i = 0; i<tokens.size();i++){
             String[] line = tokens.get(i);
             String token = line[0];
             int j = 1;
 
+            //loops till end of expression
             while(!(token.equals(";"))){
+                // a ")" means a entire operation is at the top of the stack
                 if(token.equals(")")){
                     String right = stack.pop();
                     String op = stack.pop();
                     String left = stack.pop();
                     stack.push(left+" "+right+" "+op);
                 }
+                //push everything but "("
                 else if(!(token.equals("("))){
                     stack.push(token);
                 }
