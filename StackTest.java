@@ -20,9 +20,6 @@ public class StackTest{
         System.out.println("Stack length: "+test.getLength());
         test.clear();
         System.out.println("Test after clearing: "+test.toString());
-        Stack<String> test2 = new Stack();
-        test2.push("String");
-        System.out.println("Stack after pushing String:\n "+test2.toString());
     }
 }
 
