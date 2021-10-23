@@ -10,6 +10,7 @@ public class Assembler {
     private ArrayList<String> input;
     //Stores all the assembly outputs
     private ArrayList<String> output;
+    private ArrayList<String> returnableOutput;
 
     private String filePath;
     //Stores what temporary register # is to be used next
@@ -24,6 +25,7 @@ public class Assembler {
         ops.put("+", "AD");
         ops.put("-", "SB");
         ops.put("/", "DV");
+        this.returnableOutput = new ArrayList<String>();
         this.output = this.toAssembly(input);
     }
 
@@ -90,12 +92,13 @@ public class Assembler {
         String out = String.format("LD %s\n" , left);
         out += String.format("%s %s\n", this.ops.get(op), right);
         out += String.format("ST TMP%d\n", this.tempNo++);
+        this.returnableOutput.add(out);
         return(out);
     }
 
 
     public ArrayList<String> getOutput(){
-        return(this.output);
+        return(this.returnableOutput);
     } 
 
     public static void main(String argv[]){
